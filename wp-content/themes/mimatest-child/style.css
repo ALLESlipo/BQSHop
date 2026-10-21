@@ -1,0 +1,772 @@
+/*
+Theme Name:   Mimatest
+Theme URI:    https://mimatest.net
+Author:       Mimatest
+Author URI:   https://mimatest.net
+Description:  Mimatest shop theme: brand colours, logo and layout for the Mimatest® online store. A child theme of SaaS Company — put custom CSS in this file instead of Appearance → Additional CSS.
+Template:     saas-company
+Version:      1.0.0
+Requires at least: 6.1
+Requires PHP: 7.4
+License:      GNU General Public License v3 or later
+License URI:  https://www.gnu.org/licenses/gpl-3.0.html
+Text Domain:  mimatest-child
+*/
+
+/* ---------- Header / navigation ---------- */
+
+.wp-block-navigation ul,
+.wp-block-navigation ul li {
+	color: #666654;
+}
+
+.wp-block-site-logo.is-default-size img {
+	height: auto;
+	width: 240px;
+}
+
+/* ---------- Home banner ---------- */
+
+.banner-image-cover::before,
+.banner-image-cover::after {
+	background-image: linear-gradient(#fff, #f4f4f4), radial-gradient(circle at top left, #666654, #858c7f) !important;
+}
+
+/* ---------- Buttons ---------- */
+
+.has-ternary-to-secondary-gradient-background {
+	background: #b5524f !important;
+}
+
+.wp-block-button.wc-block-components-product-button .wp-block-button__link {
+	background-color: #858c7f;
+}
+
+.wp-block-button.wc-block-components-product-button .wp-block-button__link:hover {
+	background-color: #b5524f;
+}
+
+/* ---------- Misc ---------- */
+
+.scroll-top::before {
+	background: #858c7f !important;
+}
+
+/* ---------- Home hero: 3D kit box (assets/js/box-3d.js) ---------- */
+
+/* Show the transparent PNG at its true proportions, without the theme's card shadow. */
+.banner-img-box .main-img img {
+	object-fit: contain;
+	box-shadow: none;
+	border-radius: 0 !important;
+}
+
+.banner-img-box .main-img.has-box3d {
+	position: relative;
+}
+
+/* The PNG keeps the layout; the 3D box is drawn on top of it. */
+.banner-img-box .main-img.has-box3d img {
+	visibility: hidden;
+}
+
+.mt-box3d {
+	--w: 300px;
+	--h: 187px;
+	--d: 60px;
+	position: absolute;
+	width: var(--w);
+	height: var(--h);
+	perspective: 1400px;
+	cursor: grab;
+	touch-action: pan-y; /* vertical swipes still scroll the page on phones */
+	user-select: none;
+	-webkit-user-select: none;
+	outline: none;
+}
+
+.mt-box3d.is-dragging {
+	cursor: grabbing;
+}
+
+.mt-box3d:focus-visible {
+	outline: 2px solid #858c7f;
+	outline-offset: 24px;
+	border-radius: 4px;
+}
+
+/* Soft shadow on the "floor" under the box. */
+.mt-box3d::before {
+	content: "";
+	position: absolute;
+	left: 10%;
+	right: 10%;
+	bottom: calc(var(--d) * -0.9);
+	height: calc(var(--d) * 0.6);
+	background: radial-gradient(closest-side, rgba(0, 0, 0, 0.22), transparent);
+	filter: blur(6px);
+	pointer-events: none;
+}
+
+.mt-box3d__cube {
+	position: absolute;
+	inset: 0;
+	transform-style: preserve-3d;
+	transition: transform 0.05s linear;
+}
+
+.mt-box3d.is-dragging .mt-box3d__cube {
+	transition: none;
+}
+
+.mt-box3d__face {
+	position: absolute;
+	backface-visibility: hidden;
+	background: #f7f7f7 center / 100% 100% no-repeat;
+}
+
+.mt-box3d__face--front,
+.mt-box3d__face--back {
+	inset: 0;
+}
+
+.mt-box3d__face--front {
+	transform: translateZ(calc(var(--d) / 2));
+}
+
+.mt-box3d__face--back {
+	transform: rotateY(180deg) translateZ(calc(var(--d) / 2));
+	background-color: #fafafa;
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.mt-box3d__face--left,
+.mt-box3d__face--right {
+	top: 0;
+	left: calc((var(--w) - var(--d)) / 2);
+	width: var(--d);
+	height: var(--h);
+}
+
+.mt-box3d__face--right {
+	transform: rotateY(90deg) translateZ(calc(var(--w) / 2));
+	background-image: linear-gradient(90deg, #e6e6e6, #dcdcdc);
+}
+
+.mt-box3d__face--left {
+	transform: rotateY(-90deg) translateZ(calc(var(--w) / 2));
+	background-image: linear-gradient(90deg, #f2f2f2, #ebebeb);
+}
+
+.mt-box3d__face--top,
+.mt-box3d__face--bottom {
+	left: 0;
+	top: calc((var(--h) - var(--d)) / 2);
+	width: var(--w);
+	height: var(--d);
+}
+
+.mt-box3d__face--top {
+	transform: rotateX(90deg) translateZ(calc(var(--h) / 2));
+	background-image: linear-gradient(#fbfbfb, #f1f1f1);
+}
+
+.mt-box3d__face--bottom {
+	transform: rotateX(-90deg) translateZ(calc(var(--h) / 2));
+	background-image: linear-gradient(#e2e2e2, #d8d8d8);
+}
+
+.mt-box3d__hint {
+	position: absolute;
+	left: 50%;
+	bottom: calc(var(--d) * -1.6);
+	transform: translateX(-50%);
+	font-size: 13px;
+	letter-spacing: 0.03em;
+	color: #666654;
+	white-space: nowrap;
+	opacity: 0.8;
+	transition: opacity 0.4s;
+	pointer-events: none;
+}
+
+.mt-box3d.has-interacted .mt-box3d__hint {
+	opacity: 0;
+}
+
+/* ---------- Home "How it works": step icons ---------- */
+/* Colours are set per step in the Site Editor (icon-box group → Color → Background / Text). */
+
+.our-benefits .icon-box i {
+	font-size: 24px;
+	line-height: 1;
+	color: inherit;
+}
+
+@media screen and (max-width: 1199px) {
+	.our-benefits .icon-box i {
+		font-size: 20px;
+	}
+}
+
+/* ---------- Brand colour instead of the theme's purples ---------- */
+/* The palette purples are replaced in theme.json; these two are hard-coded in the parent CSS (#cfc8d8). */
+
+.wp-block-navigation .has-child .wp-block-navigation__submenu-container {
+	box-shadow: 2px 2px 8px rgba(181, 82, 79, 0.25);
+}
+
+.wc-block-components-product-rating__stars::before,
+.wc-block-grid__product-rating .star-rating::before {
+	color: #e3c4c3;
+}
+
+/* ---------- Cart & My account: sage buttons ---------- */
+/* These pages end right above the red footer, so red buttons there clash with it.
+   Scoped to <main> so the header mini-cart keeps its own styling. */
+
+body.woocommerce-cart main .wp-element-button,
+body.woocommerce-cart main .wc-block-components-button:not(.is-style-outline):not(.is-link),
+body.woocommerce-account main .wp-element-button,
+body.woocommerce-account main .button {
+	background-color: #858c7f !important;
+	border-color: #858c7f !important;
+	color: #ffffff !important;
+}
+
+body.woocommerce-cart main .wp-element-button:hover,
+body.woocommerce-cart main .wp-element-button:focus,
+body.woocommerce-cart main .wc-block-components-button:not(.is-style-outline):not(.is-link):hover,
+body.woocommerce-account main .wp-element-button:hover,
+body.woocommerce-account main .wp-element-button:focus,
+body.woocommerce-account main .button:hover {
+	background-color: #b5524f !important;
+	border-color: #b5524f !important;
+	color: #ffffff !important;
+}
+
+/* ---------- Home "What does the purchase include?" section ---------- */
+
+.mt-includes {
+	padding-top: 60px !important;
+	padding-bottom: 60px !important;
+}
+
+.mt-includes .wp-block-cover__image-background {
+	object-position: 50% 52%;
+}
+
+.mt-includes__title {
+	color: #666654;
+	font-size: clamp(26px, 2.6vw, 38px) !important;
+	font-weight: 600;
+	margin: 0;
+}
+
+.mt-includes__intro {
+	color: #666654;
+	font-size: 17px;
+	margin-top: 16px !important;
+}
+
+.mt-includes__cols {
+	margin-top: 48px !important;
+	gap: 24px;
+}
+
+.mt-includes__col {
+	display: flex;
+	flex-direction: column;
+	gap: 22px;
+}
+
+.mt-include-card {
+	background: rgba(255, 255, 255, 0.74);
+	-webkit-backdrop-filter: blur(3px);
+	backdrop-filter: blur(3px);
+	border-radius: 24px;
+	padding: 28px 32px;
+	text-align: center;
+	box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+	margin: 0 !important;
+}
+
+.mt-include-card i {
+	display: block;
+	color: #b5524f;
+	font-size: 30px;
+	margin-bottom: 18px;
+}
+
+.mt-include-card p {
+	color: #666654;
+	font-size: 17px;
+	line-height: 1.4;
+	margin: 0;
+}
+
+/* Tablets and phones: cards stack in one column, so stretching the photo behind the whole
+   (tall) section would blow it up. Instead the unboxing gets its own wood frame above the
+   cards, on a plain light-wood background. */
+@media screen and (max-width: 781px) {
+	.mt-includes {
+		background-color: #f3efea;
+	}
+	.mt-includes .wp-block-cover__image-background {
+		display: none;
+	}
+	.mt-includes__gap,
+	.mt-includes__gap.is-vertically-aligned-center {
+		order: -1;
+		min-height: 340px;
+		border-radius: 24px;
+		overflow: hidden;
+		background: url("/wp-content/uploads/2026/10/mimatest-web-nobox.jpg") 50% 50% / cover no-repeat;
+	}
+	.mt-includes__cols {
+		margin-top: 28px !important;
+	}
+	.mt-include-card {
+		padding: 22px 24px;
+		background: rgba(255, 255, 255, 0.85);
+	}
+}
+
+/* ---------- Home "What does the purchase include?": unboxing animation (assets/js/kit-unbox.js) ---------- */
+
+.mt-includes__col {
+	position: relative;
+	z-index: 2; /* cards stay above items that land near the column edge */
+}
+
+.mt-includes__gap.is-vertically-aligned-center {
+	align-self: stretch;
+	position: relative;
+	min-height: 480px;
+}
+
+.mt-kit {
+	--s: 1;
+	position: absolute;
+	inset: 0;
+	perspective: 1100px;
+	perspective-origin: 50% 35%;
+}
+
+/* The table plane: a point in the middle of the column, tilted like the photo. */
+.mt-kit__table {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 0;
+	height: 0;
+	transform-style: preserve-3d;
+	transform: scale(var(--s)) rotateX(52deg) rotateZ(24deg);
+}
+
+.mt-kit__shadow {
+	position: absolute;
+	left: calc(var(--bw) / -2 - 10px);
+	top: calc(var(--bh) / -2 - 10px);
+	width: calc(var(--bw) + 50px);
+	height: calc(var(--bh) + 50px);
+	background: radial-gradient(closest-side, rgba(60, 50, 40, 0.32), transparent);
+	filter: blur(10px);
+	transform: translate(14px, 16px);
+}
+
+.mt-kit__box {
+	position: absolute;
+	left: calc(var(--bw) / -2);
+	top: calc(var(--bh) / -2);
+	width: var(--bw);
+	height: var(--bh);
+	transform-style: preserve-3d;
+}
+
+.mt-kit__floor {
+	position: absolute;
+	inset: 0;
+	background: #e9e6e2;
+	transform: translateZ(1px);
+}
+
+.mt-kit__wall {
+	position: absolute;
+	background: linear-gradient(#fbfbfb, #e4e4e4);
+}
+
+.mt-kit__wall--front,
+.mt-kit__wall--back {
+	left: 0;
+	width: var(--bw);
+	height: var(--bd);
+}
+
+.mt-kit__wall--front {
+	top: var(--bh);
+	transform-origin: top;
+	transform: rotateX(90deg);
+}
+
+.mt-kit__wall--back {
+	top: calc(var(--bd) * -1);
+	transform-origin: bottom;
+	transform: rotateX(-90deg);
+}
+
+.mt-kit__wall--left,
+.mt-kit__wall--right {
+	top: 0;
+	width: var(--bd);
+	height: var(--bh);
+	background: linear-gradient(90deg, #f3f3f3, #e2e2e2);
+}
+
+.mt-kit__wall--left {
+	left: calc(var(--bd) * -1);
+	transform-origin: right;
+	transform: rotateY(90deg);
+}
+
+.mt-kit__wall--right {
+	left: var(--bw);
+	transform-origin: left;
+	transform: rotateY(-90deg);
+}
+
+/* Lid: sits on top of the walls, hinged along the back edge. */
+.mt-kit__lid {
+	position: absolute;
+	inset: 0;
+	transform-origin: top;
+	transform-style: preserve-3d;
+	transform: translateZ(var(--bd));
+	transition: transform 1.3s cubic-bezier(0.5, 0, 0.2, 1) 0.3s;
+}
+
+.mt-kit.is-open .mt-kit__lid {
+	transform: translateZ(var(--bd)) rotateX(118deg);
+}
+
+.mt-kit__lid-top,
+.mt-kit__lid-under {
+	position: absolute;
+	inset: 0;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+
+.mt-kit__lid-top {
+	background: #fafafa center / 100% 100% no-repeat;
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.mt-kit__lid-under {
+	background: linear-gradient(#f1f0ee, #e3e1de);
+	transform: rotateY(180deg);
+}
+
+/* Items: hidden inside the box, then rise out and land on the table. */
+.mt-kit__item {
+	position: absolute;
+	opacity: 0;
+	transform-style: preserve-3d;
+	transform: translate3d(0, 0, 6px) scale(0.4);
+}
+
+.mt-kit__item img {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	user-select: none;
+}
+
+/* Item-shaped shadow, flat on the table and cast away from the light. */
+.mt-kit__item-shadow {
+	filter: brightness(0) blur(4px);
+	opacity: 0.32;
+	transform: translate3d(10px, 4px, 0.5px) scaleY(1.05);
+}
+
+/* The item leans up off the table (hinged on its front edge) so it faces the viewer. */
+.mt-kit__lean {
+	position: absolute;
+	inset: 0;
+	transform-style: preserve-3d;
+	transform-origin: 50% 100%;
+	transform: translateZ(1px) rotateX(-28deg);
+}
+
+/* Thickness: darker copies just behind the item read as its edge. */
+.mt-kit__edge {
+	filter: brightness(0.72) contrast(1.1);
+	transform: translateZ(var(--z));
+}
+
+.mt-kit__img {
+	filter: contrast(1.08) saturate(1.12) brightness(1.02);
+	transform: translateZ(0.5px);
+}
+
+.mt-kit.is-open .mt-kit__item {
+	animation: mt-kit-out 1.4s cubic-bezier(0.3, 0.7, 0.3, 1) var(--delay) both;
+}
+
+/* Replay: items fly back into the box (last one out goes in first). */
+.mt-kit.is-open.is-closing .mt-kit__item {
+	animation: mt-kit-in 0.9s cubic-bezier(0.5, 0, 0.7, 0.4) var(--delay-in) both;
+}
+
+@keyframes mt-kit-out {
+	0% {
+		opacity: 0;
+		transform: translate3d(0, 0, 6px) rotate(0deg) scale(0.4);
+	}
+	12% {
+		opacity: 1;
+	}
+	45% {
+		transform: translate3d(calc(var(--tx) * 0.35), calc(var(--ty) * 0.35), calc(var(--bd) * 3.2)) rotate(calc(var(--rot) * 0.5)) scale(0.85);
+	}
+	100% {
+		opacity: 1;
+		transform: translate3d(var(--tx), var(--ty), 2px) rotate(var(--rot)) scale(1);
+	}
+}
+
+@keyframes mt-kit-in {
+	0% {
+		opacity: 1;
+		transform: translate3d(var(--tx), var(--ty), 2px) rotate(var(--rot)) scale(1);
+	}
+	55% {
+		opacity: 1;
+		transform: translate3d(calc(var(--tx) * 0.35), calc(var(--ty) * 0.35), calc(var(--bd) * 3.2)) rotate(calc(var(--rot) * 0.5)) scale(0.85);
+	}
+	100% {
+		opacity: 0;
+		transform: translate3d(0, 0, 6px) rotate(0deg) scale(0.4);
+	}
+}
+
+/* Reduced motion: show the opened box with the items already laid out. */
+.mt-kit.no-motion .mt-kit__lid {
+	transition: none;
+}
+
+.mt-kit.no-motion .mt-kit__item {
+	animation: none;
+	opacity: 1;
+	transform: translate3d(var(--tx), var(--ty), 2px) rotate(var(--rot));
+}
+
+.mt-kit__replay {
+	position: absolute;
+	left: 50%;
+	bottom: 6px;
+	transform: translateX(-50%);
+	padding: 6px 16px;
+	border: 0;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.85);
+	color: #666654;
+	font-size: 13px;
+	letter-spacing: 0.03em;
+	cursor: pointer;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.4s, background-color 0.2s, color 0.2s;
+}
+
+.mt-kit.is-done .mt-kit__replay {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.mt-kit__replay:hover,
+.mt-kit__replay:focus-visible {
+	background: #858c7f;
+	color: #ffffff;
+}
+
+.mt-kit.no-motion .mt-kit__replay {
+	display: none;
+}
+
+/* ---------- Home: background video section (.mt-video) ---------- */
+
+.mt-video {
+	position: relative;
+	overflow: hidden;
+	aspect-ratio: 16 / 9; /* same shape as the video, so nothing is cropped */
+	padding: 0 !important;
+	margin-top: 0 !important;
+	/* Shown while the video loads, and for visitors who prefer reduced motion. */
+	background: #111111 url("https://i.ytimg.com/vi/FXTKBjIK9XY/maxresdefault.jpg") center / cover no-repeat;
+}
+
+/* The player fills the section exactly: whole video visible, no zoom or blur. */
+.mt-video__bg {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	margin: 0 !important;
+	max-width: none !important;
+	pointer-events: none;
+}
+
+.mt-video__bg iframe {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+/* Only a soft shade along the bottom, so the button and sound icon stay readable. */
+.mt-video__tint {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	margin: 0 !important;
+	max-width: none !important;
+	background: linear-gradient(to top, rgba(17, 17, 17, 0.3), transparent 22%);
+}
+
+/* "Order your test kit" — bottom left. */
+.mt-video__buttons {
+	position: absolute !important;
+	left: 40px;
+	bottom: 40px;
+	z-index: 2;
+	margin: 0 !important;
+}
+
+.mt-video__btn .wp-block-button__link {
+	background-color: #b5524f;
+	border: 2px solid #b5524f;
+	color: #ffffff;
+	border-radius: 8px;
+	padding: 12px 26px;
+	font-size: 15px;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.mt-video__btn .wp-block-button__link:hover,
+.mt-video__btn .wp-block-button__link:focus-visible {
+	background-color: #858c7f;
+	border-color: #858c7f;
+	color: #ffffff;
+}
+
+/* Sound on/off — small round icon, bottom right (assets/js/video-sound.js). */
+.mt-video__sound {
+	position: absolute;
+	right: 40px;
+	bottom: 44px;
+	z-index: 2;
+	width: 44px;
+	height: 44px;
+	display: grid;
+	place-items: center;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.85);
+	color: #666654;
+	font-size: 16px;
+	cursor: pointer;
+	transition: background-color 0.2s, color 0.2s;
+}
+
+.mt-video__sound:hover,
+.mt-video__sound:focus-visible,
+.mt-video__sound[aria-pressed="true"] {
+	background: #b5524f;
+	color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mt-video__bg,
+	.mt-video__sound {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.mt-video__buttons {
+		left: 12px;
+		bottom: 12px;
+	}
+	.mt-video__btn .wp-block-button__link {
+		padding: 7px 14px;
+		font-size: 13px;
+	}
+	.mt-video__sound {
+		right: 12px;
+		bottom: 12px;
+		width: 34px;
+		height: 34px;
+		font-size: 13px;
+	}
+}
+
+.mt-video__sound:focus {
+	outline: none;
+}
+
+.mt-video__sound:focus-visible {
+	outline: 2px solid #ffffff;
+	outline-offset: 3px;
+}
+
+/* ---------- Header: language switcher ([mimatest_language_switcher]) ---------- */
+
+.mt-lang {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	margin-right: 8px;
+}
+
+.mt-lang__link {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 8px;
+	border-radius: 6px;
+	color: #666654;
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-decoration: none;
+	opacity: 0.55;
+	transition: opacity 0.2s, background-color 0.2s;
+}
+
+.mt-lang__link img {
+	display: block;
+	width: 20px;
+	height: 14px;
+	object-fit: cover;
+	border-radius: 2px;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.mt-lang__link:hover,
+.mt-lang__link:focus-visible {
+	opacity: 1;
+	background-color: #f6e8e7;
+	color: #666654;
+}
+
+.mt-lang__link.is-active {
+	opacity: 1;
+}
+
+.mt-lang__link.is-active span {
+	color: #b5524f;
+}

@@ -1,0 +1,72 @@
+services:
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${SITE_PORT}:80"
+    # WordPress calls its own URL (http://localhost:${SITE_PORT}) to run background tasks (WP-Cron,
+    # WooCommerce Action Scheduler). Inside the container Apache only listens on 80, so also
+    # answer on ${SITE_PORT} — otherwise those self-requests fail and tasks pile up.
+    command: >
+      bash -c "grep -q '^Listen ${SITE_PORT}' /etc/apache2/ports.conf || echo 'Listen ${SITE_PORT}' >> /etc/apache2/ports.conf;
+      sed -i 's/<VirtualHost [*]:80>/<VirtualHost *:80 *:${SITE_PORT}>/' /etc/apache2/sites-enabled/000-default.conf;
+      exec docker-entrypoint.sh apache2-foreground"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_DEBUG: "1"
+    volumes:
+      - wp_data:/var/www/html
+      - ./wp-content/mu-plugins:/var/www/html/wp-content/mu-plugins:ro
+      - ./wp-content/themes/mimatest-child:/var/www/html/wp-content/themes/mimatest-child
+
+  # Catches all outgoing email (order confirmations etc.): http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8025:8025"
+
+  # WP-CLI, run on demand: docker compose run --rm wpcli wp <command>
+  wpcli:
+    image: wordpress:cli-php8.3
+    profiles: ["cli"]
+    user: "33:33"
+    depends_on:
+      - db
+      - wordpress
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - wp_data:/var/www/html
+      - ./wp-content/mu-plugins:/var/www/html/wp-content/mu-plugins:ro
+      - ./wp-content/themes/mimatest-child:/var/www/html/wp-content/themes/mimatest-child
+      - ./scripts:/scripts:ro
+
+volumes:
+  db_data:
+  wp_data:
