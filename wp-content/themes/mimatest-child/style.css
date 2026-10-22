@@ -770,3 +770,30 @@ body.woocommerce-account main .button:hover {
 .mt-lang__link.is-active span {
 	color: #b5524f;
 }
+
+/* ---------- SEO: home hero headline is now an H1 ---------- */
+/* The parent theme sizes it for phones/tablets only as an H2; give the H1 the same sizes. */
+
+@media screen and (max-width: 1299px) {
+	.banner-text-box h1 {
+		font-size: 32px !important;
+	}
+}
+
+@media screen and (max-width: 999px) {
+	.banner-text-box h1 {
+		font-size: 25px !important;
+	}
+}
+
+@media screen and (max-width: 781px) {
+	.banner-text-box h1 {
+		font-size: 30px !important;
+	}
+}
+
+@media screen and (max-width: 599px) {
+	.banner-text-box h1 {
+		font-size: 20px !important;
+	}
+}

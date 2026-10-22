@@ -177,6 +177,69 @@ add_action( 'wp_dashboard_setup', function () {
 } );
 
 /**
+ * SiteGround Security's "Lock and Protect System Folders" blocks every PHP file in
+ * wp-content. TranslatePress loads translations of dynamic texts (e.g. checkout labels)
+ * through its own endpoint there, so allow just that file. After changing this, toggle
+ * the protection off and on (Security → Site Security) so SiteGround rewrites its rules.
+ */
+add_filter( 'sgs_whitelist_wp_content', function ( $files ) {
+	$files[] = 'trp-ajax.php';
+	return $files;
+} );
+
+/**
+ * SEO: on pages, the title in the theme's banner (a Post Title block without a level set,
+ * so an H2) is the page's main heading — make it the H1. Products already get their H1
+ * from WooCommerce, so only pages are touched, and only once per request.
+ */
+add_filter( 'render_block_core/post-title', function ( $html, $block ) {
+	static $done = false;
+	if ( $done || ! is_page() || isset( $block['attrs']['level'] ) ) {
+		return $html;
+	}
+	$done = true;
+	return preg_replace( array( '/^(\s*)<h2\b/', '#</h2>(\s*)$#' ), array( '$1<h1', '</h1>$1' ), $html );
+}, 10, 2 );
+
+/**
+ * SEO: Rank Math prints the <title> itself, and for block templates WordPress always adds
+ * its own as well (_block_template_render_title_tag), so pages had two. While Rank Math is
+ * active, keep only its title; without it, WordPress's comes back.
+ */
+add_action( 'wp_head', function () {
+	if ( defined( 'RANK_MATH_VERSION' ) ) {
+		remove_action( 'wp_head', '_block_template_render_title_tag', 1 );
+	}
+}, 0 );
+
+/**
+ * SEO on the English site: free TranslatePress translates page text but not the <title>,
+ * meta description or social tags (that's its paid SEO Pack). Run Rank Math's output
+ * through TranslatePress's stored translations instead, so the English versions are
+ * edited in TranslatePress → String Translation like everything else.
+ */
+function mimatest_translate_seo_text( $text ) {
+	global $TRP_LANGUAGE;
+	$settings = get_option( 'trp_settings' );
+	if ( ! is_string( $text ) || '' === $text || ! function_exists( 'trp_translate' )
+		|| empty( $TRP_LANGUAGE ) || empty( $settings['default-language'] ) || $TRP_LANGUAGE === $settings['default-language'] ) {
+		return $text;
+	}
+	$translated = trp_translate( $text, $TRP_LANGUAGE, false );
+	return is_string( $translated ) && '' !== trim( $translated ) ? $translated : $text;
+}
+foreach ( array(
+	'rank_math/frontend/title',
+	'rank_math/frontend/description',
+	'rank_math/opengraph/facebook/og_title',
+	'rank_math/opengraph/facebook/og_description',
+	'rank_math/opengraph/twitter/twitter_title',
+	'rank_math/opengraph/twitter/twitter_description',
+) as $mimatest_seo_hook ) {
+	add_filter( $mimatest_seo_hook, 'mimatest_translate_seo_text', 99 );
+}
+
+/**
  * The parent's page-header banner (product, cart, account… pages) is a purple SaaS-dashboard
  * image baked into its patterns. Serve our brand-coloured version instead.
  */
